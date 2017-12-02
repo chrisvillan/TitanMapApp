@@ -1,0 +1,45 @@
+{% extends "campusmap.html" %}
+{% block display %}
+      {% for i in directions %}
+      <p> {{ loop.index }}. {{ i|safe }} </p>
+      <hr>
+      {% endfor %}
+{% endblock %}
+
+{% block call %} calculateAndDisplayRoute(latlong, directionsService, directionsDisplay) {% endblock %}
+
+{% block script %}
+      function calculateAndDisplayRoute(latlong, directionsService, directionsDisplay) {
+        var start = latlong
+        var end =  "{{ src }}";
+        directionsService.route({
+          origin: start,
+          destination: end,
+          travelMode: 'WALKING'
+        }, function(response, status) {
+          if (status === 'OK') {
+            directionsDisplay.setDirections(response);
+          } else {
+            window.alert('Directions request failed due to ' + status);
+          }
+        });
+      }
+{% endblock %}
+
+{% block time %}
+    document.getElementById('txt').innerHTML=h+":"+m+":"+s;
+
+    var travelTime = parseInt("{{tl}}");
+    var timeLeft = 30 - m;
+    var arrival = timeLeft - travelTime
+
+    if(arrival < 0){
+      document.getElementById('redwarning').innerHTML="RUN! " + "You'll be there: " + arrival * -1 + " mins late!";
+    }
+    else if(arrival > 0 && arrival < 10){
+      document.getElementById('orangewarning').innerHTML="You'll be there: " + arrival + " mins early";
+    }
+    else{
+
+    }
+  {% endblock %}
